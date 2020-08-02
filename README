@@ -1,0 +1,121 @@
+omri_baroz
+312414279
+Omri Bar-Oz
+
+I discussed the exercise with: noone.
+
+==============================
+=  README for ex12: Four in a row!  =
+==============================
+
+==================
+=  Description:  =
+==================
+FILE - GAME.PY
+Firstly, each disc has been assigned a string value so the logic can work
+with or without the gui.
+__init__ - self.__turn keeps tabs on the turns, hence, knowing which player is now playing.
+         - self.__board - defines a board object for the game.
+         - self.__last_move - used to pinpoint the victorious sequence. knowing the last move reduces
+           the amount of cells that must be searched.
+         - self.__winning_locations = if a victory has been achieved, this will be a list of the tuples of the cells.
+         - self.__is_winner - determines if there is a winner
+         - self.__play_again - if the user wishes to play again, the game must be reset. it will be reset if play_again
+           is True.
+init_state - resets the board and all the game values to the initial state.
+get_is_winner, get_turn, get_winning_location, get_play_again - getters.
+set_play_again - if 'yes' is pressed on the GUI, play again is set to True.
+add_turn - adds a turn.
+place_disc - checks if the placement is legal with the game rules. raises an exception if
+they are not. Then, tries to place the disc on the board. An exception will be raised if the board failed
+to place the disc, no matter the reason.
+make_move - uses a try/except block. tries to place the disc, if failed, None is returned.
+get_current_player - gets the current player
+get_player_at - given a row and a column returns the number of the player in that cell.
+row_seq, col_seq, left_right_diag, right_left_diag; Given a row and a column, which are
+the last move played, goes through the relevant segments of the board. It goes in all directions like
+you would search a matrix.
+winning_location_getter - after a winner has been found in the relevant direction, this function is called
+goes through the proper direction and returns the list of tuples that has the winning sequence.
+sequencer_main - the main function for the sequence checker. if there is a winner, True is returned.
+set_winner - seta winner if one has been found, or, a draw if necessary.
+get_winner uses a try/except block to try and see if there is a winner. If a winner exists, it is set and True is
+returned. Else, it will check if perhaps there is a draw, and only then return None(no winner, no draw).
+
+FILE - AI.PY
+___init___ - gets a game, player and a move.
+get_player - getter
+find_legal_move - finds a legal move using random and checking if there is a player
+in the given move.
+get_last_found_move - getter.
+
+FILE - BOARD.PY
+__init__ - self.__board - gives a representation of the board
+           self.__last_move - the last move played on the board
+__str__ - returns the visual representation
+get_board - getter
+make_move - attempts to make the move on the board according to the boards inner logic - wont
+place it if its empty. at this point, the column is legal as the game checks for that. True will be returned
+after a successful placement.
+set_last_move - sets the last move played.
+get_last_move - getter
+reset - resets the board to its original position.
+
+FILE - GUI.PY
+___init__ - takes in a game object. Defines a canvas, a root (that starts in full screen) and alot of variables
+that are used throughout the GUI - a variable of the current disc, a dictionary of the columns depth, list
+of buttons. game_definer is called here to define the GUI properly and graphically.
+init_state - restarts the GUI.
+return_root - returns the root
+update_canvas - updates the canvas when called
+game_definer - calls the 4 functions that are basically the ones the GUI needs to run.
+canvas_builder - builds the canvas according to the boundaries i wanted, packs it.
+line_create - creates lines throughout the canvas so it will look like a board.
+column_dictionary - the GUI has a concept of depth. it knows it musn't stack objects on it self and
+that it has limited space on it. this dictionary will contain the amount of discs in each column
+place_buttons - places the buttons in the proper locations
+create_buttons - creates buttons aslong as there is no winner. If there is a winner,
+no buttons will be created.
+button_disabler - unbinds the buttons when a move is being played.
+game_binder - Binds the game with the GUI. It checks with the game if a move is legal,
+then, gives the move a visual representation. ONLY ONCE the circle is done dropping
+the next player may play.
+winner - if there is a winner, the winning line will be drawn.
+smooth_motion - defines the cricles slow descend to its place. It calculates the wanted
+location and changes the discs location until it has reached this location.
+draw_circle - draws the discs according to the proper colors.
+draw_winning_line - draws the winning line when a winner exists.
+quit_game - quits the game
+play_again - restarts the GUI and game if the user wishes to play again, destroys
+the previous root after a small amount of time.
+framer - creates the frame that asks the player if he wishes to play again.
+mainloop - mainloop
+
+FILE - STARTING_MENU.PY
+___init__ - Starts with a default type, a root and initiates the GUI.
+starting_menu - Defines the starting menus GUI, buttons and graphics.
+root_mainloop - does the root
+player_type - takes in the type of player from the buttons. it will then destroy the root
+after 10ms so the type will be transferred to the game without issues.
+get_player_type - type
+destroy - destroys the root.
+
+FILE - FOUR_IN_A_ROW.PY
+player_decider - takes in the type of player from the starting menu so the game will know
+which mode to run.
+game_loop - The main loop function. Each iteration it defines the current player
+and checks if there is a winner. IF the AIs turn is up, does the turn. Calls an outer function
+that calls itself using the AFTER command to avoid a recursion error
+game_runner - enters the game_loop each time. If it returns True, the player will be asked
+if he wishes to play again.
+play_again - checks if 'yes' has been pressed in the GUI, resets the game then
+calls game_runner again. It will callitself again using AFTER aslong as the player hasn't pressed
+a button.
+
+======================
+=  Special Comments  =
+======================
+- As I stated, I created the main menu class because I dont think it makes sense to define a GUI then instantly
+withdraw it until a player has chosen which game to play. I see it as two different and unrelated actions.
+- The board only knows he has spaces and cannot stack. He doesn't know which game he's playing.
+- The game doesn't know he has a GUI.
